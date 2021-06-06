@@ -1,2 +1,8 @@
-*.class
-*.log
+target
+.metals
+.vscode
+.bloop
+metals.sbt
+*.idea
+.scalafmt.conf
+/project/metals.sbt
