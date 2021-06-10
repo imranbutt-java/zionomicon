@@ -20,9 +20,19 @@ lazy val chapter04 = (project in file("chapter04"))
     testFrameworks += testFramework
   )
 
+lazy val chapter15 = (project in file("chapter15"))
+  .settings(
+    name := "chapter15",
+    scalaVersion := "2.13.6",
+    scalaSource := baseDirectory.value / "src/main/scala",
+    scalaSource := baseDirectory.value / "src/test/scala",
+    libraryDependencies ++= Dependencies.zio,
+    testFrameworks += testFramework
+  )
+
 lazy val root = project
   .in(file("."))
-  .aggregate(chapter04)
+  .aggregate(chapter04, chapter15)
   .settings(
     name := "zionomicon",
     version := "0.1.0",

@@ -1,7 +1,4 @@
-import Exercise02.isSuitable
-import zio.{ExitCode, URIO, ZEnv, ZIO}
-
-import java.io.FileNotFoundException
+import zio.{ App, ExitCode, URIO, ZEnv, ZIO }
 
 /* Created by imransarwar on 06/06/2021 */
 
@@ -16,7 +13,11 @@ import java.io.FileNotFoundException
  * (zio: ZIO[R, E, A])( f: Throwable => Option[A]): ZIO[R, E, A] = ???
  */
 object Exercise02 extends App {
-  def isSuitable: Throwable => Boolean = ???
+  def isSuitable(x: Throwable) = x match {
+    case x if x.getMessage == "Ops" => true
+    case _                          => false
+  }
+
   def recoverFromSomeDefects[R, E, A](zio: ZIO[R, E, A])(f: Throwable => Option[A]): ZIO[R, E, A] =
     zio.foldCauseM(
       cause =>
@@ -27,6 +28,16 @@ object Exercise02 extends App {
       _ => zio
     )
 
+  val f = (x: Throwable) ⇒
+    if (x.getMessage == "Ops") Option("Got it")
+    else Option("Nops")
+
   override def run(args: List[String]): URIO[ZEnv, ExitCode] =
-  recoverFromSomeDefects(ZIO.succeed("Done")(throw new In("Reason") => Option("Got it"))
+    URIO
+      .succeed(throw new Exception("Ops"))
+      .catchSomeCause {
+        case _ =>
+          recoverFromSomeDefects(ZIO.succeed("Done"))(f)
+      }
+      .exitCode
 }
